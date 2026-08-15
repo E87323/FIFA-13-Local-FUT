@@ -1,0 +1,68 @@
+# Machine-specific settings/runtime cache
+local.settings.json
+.runtime_python_path.txt
+.runtime_pydeps/
+
+# Local save state
+save/*.sqlite3
+save/*.sqlite3-*
+save/snapshot-*.json
+!save/.keep
+
+# Generated game-derived catalogues
+# These are rebuilt from the user's own installed cards0.big.
+data/fifa13-full-player-catalog.json
+data/fifa13-native-item-catalog.json
+
+# EA game binaries / optional private local DLL slot
+required/CardsDLLzf.dll
+*.big
+*.bh
+*.apt
+*.const
+*.chunkzip
+*.dmp
+*.rep/
+*.gpr
+extracted/
+
+# Locally generated TLS material / secrets
+src/bridge/secrets/*
+!src/bridge/secrets/.keep
+*.key
+*.pem
+*.pfx
+*.p12
+*.der
+*.crt
+*.cer
+*.csr
+*.srl
+pgpass.conf
+
+# Runtime output
+artifacts/*
+!artifacts/.keep
+logs/*
+!logs/.keep
+reports/*
+!reports/.keep
+runtime/*
+!runtime/.keep
+backups/
+captures/
+*.log
+*.jsonl
+*.etl
+*.pcapng
+
+# Python/.NET development output
+.venv/
+__pycache__/
+*.pyc
+.nuget/
+bin/
+obj/
+
+# NOTE: src/bridge/out and src/trace-proxy/out are intentionally tracked.
+# They are the self-contained runtime binaries used by end users.
