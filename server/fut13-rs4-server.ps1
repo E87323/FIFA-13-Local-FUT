@@ -1241,6 +1241,15 @@ function Get-Body([string] $Path, [string] $Method = 'GET', [string] $RequestBod
     if ($clean -match '/game/fifa13/item$' -and $Method -eq 'PUT') {
         return (Move-ItemsDocument $RequestBody)
     }
+    # Redeem/apply a single owned item (e.g. "Redeem item" on a coins unlock
+    # card in New Items). This route was previously unhandled and fell through
+    # to the generic 404 below, which makes FIFA 13 tear down the whole FUT
+    # session ~40s later via /ut/delete/auth: the client waits for a real
+    # response, gets nothing usable, and shows "error connecting to FIFA 13
+    # Ultimate Team".
+    if ($clean -match '/game/fifa13/item/(\d+)$' -and $Method -eq 'POST') {
+        return (Apply-ItemDocument $Matches[1] $RequestBody)
+    }
 
     # Squads: donor's decoded active/full envelope and compact list.
     if ($clean -match '/squad/list$') {
@@ -1858,6 +1867,42 @@ function Quick-SellDocument([string]$Path){
     $ids=@();if($Path -match '(?:\?|&)itemIds=([^&]+)'){foreach($x in $Matches[1].Split(',')){if($x -match '^\d+$'){$ids += [int64]$x}}};if($Path -match '/item/(\d+)(?:\?|$)'){$ids += [int64]$Matches[1]}
     foreach($id in @($ids|Select-Object -Unique)){$item=Get-OwnedPlayerByItemId $id;if($null -eq $item){continue};$script:Coins += [int64]$item.discardValue;$script:PurchasedItems=@($script:PurchasedItems|Where-Object{[int64]$_.id -ne $id});$script:PurchasedDuplicatePairs=@($script:PurchasedDuplicatePairs|Where-Object{[int64]$_.itemId -ne $id});$script:ClubExtraItems=@($script:ClubExtraItems|Where-Object{[int64]$_.id -ne $id});$script:TradePileItems=@($script:TradePileItems|Where-Object{[int64]$_.id -ne $id});for($i=0;$i -lt $script:SquadOrder.Count;$i++){if([int64]$script:SquadOrder[$i] -eq $id){$script:SquadOrder[$i]=0}}}
     Persist-SaveState;return ('{"totalCredits":'+[int64]$script:Coins+'}')
+}
+
+function Apply-ItemDocument([string]$ItemIdText,[string]$JsonBody){
+    $id=0
+    if(-not [int64]::TryParse($ItemIdText,[ref]$id)){
+        return '{"itemData":[]}'
+    }
+    $item=Get-OwnedPlayerByItemId $id
+    if($null -eq $item){
+        return ([ordered]@{itemData=@([ordered]@{id=$id;success=$false;reason='item not found'})}|ConvertTo-Json -Depth 5 -Compress)
+    }
+    $facts=$script:ItemByResourceId[[string][long]$item.resourceId]
+    $kind=if($facts){[string]$facts.kind}else{''}
+
+    # Only the self-contained "coins" unlock is implemented here: the amount
+    # comes straight from the native item catalogue (data/fifa13-native-item-
+    # catalog.json, extracted directly from retail game resource data -- not a
+    # guessed number). Consumables that apply TO a specific player
+    # (contract/training/health/etc., which arrive with a non-empty "apply"
+    # target list) are a separate, unmeasured feature; report failure instead
+    # of a 404 so the client stays connected, and leave the item untouched
+    # rather than fabricate an effect.
+    if($kind -eq 'coins'){
+        $amount=if($facts -and $facts.amount){[int64]$facts.amount}else{0}
+        $script:Coins += $amount
+        $script:PurchasedItems=@($script:PurchasedItems|Where-Object{[int64]$_.id -ne $id})
+        $script:PurchasedDuplicatePairs=@($script:PurchasedDuplicatePairs|Where-Object{[int64]$_.itemId -ne $id})
+        $script:ClubExtraItems=@($script:ClubExtraItems|Where-Object{[int64]$_.id -ne $id})
+        $script:TradePileItems=@($script:TradePileItems|Where-Object{[int64]$_.id -ne $id})
+        Persist-SaveState
+        Write-Log ("APPLY ITEM: id={0} kind=coins amount={1} totalCoins={2}" -f $id,$amount,$script:Coins)
+        return ([ordered]@{itemData=@([ordered]@{id=$id;success=$true;reason=''})}|ConvertTo-Json -Depth 5 -Compress)
+    }
+
+    Write-Log ("APPLY ITEM: id={0} kind={1} not implemented, item left untouched" -f $id,$kind)
+    return ([ordered]@{itemData=@([ordered]@{id=$id;success=$false;reason='not implemented'})}|ConvertTo-Json -Depth 5 -Compress)
 }
 
 function Save-ClientDataDocument([string]$Bucket,[string]$JsonBody){$key=$Bucket.ToLowerInvariant();$entries=@();try{$doc=$JsonBody|ConvertFrom-Json;foreach($e in @($doc.entries)){if($null -ne $e.key -and $null -ne $e.value){$entries += [ordered]@{key=[int]$e.key;value=[int]$e.value}}}}catch{};$script:ClientDataBuckets[$key]=$entries;Persist-SaveState;return (Get-ClientDataDocument $Bucket)}
