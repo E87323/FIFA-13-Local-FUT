@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" target-language="en" datatype="plaintext" original="storepackdescriptions">
+    <body>
+      <trans-unit id="FUT_STORE_PACK_1_NAME" resname="FUT_STORE_PACK_1_NAME">
+        <source>BRONZE PACK</source>
+        <target>BRONZE PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_1_DESC" resname="FUT_STORE_PACK_1_DESC">
+        <source>Great Value for increasing club depth and building better chemistry.&#10;&#10;Includes 12 items. Mostly Bronze &amp; 1 Rare.</source>
+        <target>Great Value for increasing club depth and building better chemistry.&#10;&#10;Includes 12 items. Mostly Bronze &amp; 1 Rare.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_2_NAME" resname="FUT_STORE_PACK_2_NAME">
+        <source>PREMIUM BRONZE PACK</source>
+        <target>PREMIUM BRONZE PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_2_DESC" resname="FUT_STORE_PACK_2_DESC">
+        <source>For those looking for the highest quality Bronze items, this is the clear choice.&#10;&#10;Includes 12 items. Mostly Bronze &amp; 3 Rares.</source>
+        <target>For those looking for the highest quality Bronze items, this is the clear choice.&#10;&#10;Includes 12 items. Mostly Bronze &amp; 3 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_3_NAME" resname="FUT_STORE_PACK_3_NAME">
+        <source>PREMIUM BRONZE JUMBO</source>
+        <target>PREMIUM BRONZE JUMBO</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_3_DESC" resname="FUT_STORE_PACK_3_DESC">
+        <source>More high quality items and double the size of a Premium Bronze Pack.&#10;&#10;Includes 24 items. Mostly Bronze &amp; 7 Rares.</source>
+        <target>More high quality items and double the size of a Premium Bronze Pack.&#10;&#10;Includes 24 items. Mostly Bronze &amp; 7 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_4_NAME" resname="FUT_STORE_PACK_4_NAME">
+        <source>BRONZE PLAYERS PREMIUM</source>
+        <target>BRONZE PLAYERS PREMIUM</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_4_DESC" resname="FUT_STORE_PACK_4_DESC">
+        <source>Players only, better chance of getting rare or high quality players.&#10;&#10;Includes 12 players. Mostly Bronze &amp; 3 Rares.</source>
+        <target>Players only, better chance of getting rare or high quality players.&#10;&#10;Includes 12 players. Mostly Bronze &amp; 3 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_5_NAME" resname="FUT_STORE_PACK_5_NAME">
+        <source>SILVER PACK</source>
+        <target>SILVER PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_5_DESC" resname="FUT_STORE_PACK_5_DESC">
+        <source>The best value for maintaining and building squads for mid-tiered events.&#10;&#10;Includes 12 items. Mostly Silver &amp; 1 Rare.</source>
+        <target>The best value for maintaining and building squads for mid-tiered events.&#10;&#10;Includes 12 items. Mostly Silver &amp; 1 Rare.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_6_NAME" resname="FUT_STORE_PACK_6_NAME">
+        <source>PREMIUM SILVER PACK</source>
+        <target>PREMIUM SILVER PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_6_DESC" resname="FUT_STORE_PACK_6_DESC">
+        <source>For those looking for the highest quality Silver items, this is the clear choice.&#10;&#10;Includes 12 items. Mostly Silver &amp; 3 Rares.</source>
+        <target>For those looking for the highest quality Silver items, this is the clear choice.&#10;&#10;Includes 12 items. Mostly Silver &amp; 3 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_7_NAME" resname="FUT_STORE_PACK_7_NAME">
+        <source>PREMIUM SILVER JUMBO</source>
+        <target>PREMIUM SILVER JUMBO</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_7_DESC" resname="FUT_STORE_PACK_7_DESC">
+        <source>More high quality items and double the size of a Premium Silver Pack.&#10;&#10;Includes 24 items. Mostly Silver &amp; 7 Rares.</source>
+        <target>More high quality items and double the size of a Premium Silver Pack.&#10;&#10;Includes 24 items. Mostly Silver &amp; 7 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_8_NAME" resname="FUT_STORE_PACK_8_NAME">
+        <source>SILVER PLAYERS PREMIUM</source>
+        <target>SILVER PLAYERS PREMIUM</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_8_DESC" resname="FUT_STORE_PACK_8_DESC">
+        <source>Players only, better chance of getting rare or higher quality players.&#10;&#10;Includes 12 players. Mostly Silver &amp; 3 Rares.</source>
+        <target>Players only, better chance of getting rare or higher quality players.&#10;&#10;Includes 12 players. Mostly Silver &amp; 3 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_9_NAME" resname="FUT_STORE_PACK_9_NAME">
+        <source>GOLD PACK</source>
+        <target>GOLD PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_9_DESC" resname="FUT_STORE_PACK_9_DESC">
+        <source>The best pack to find the best players for building your number one squad.&#10;&#10;Includes 12 items. Mostly Gold &amp; 1 Rare.</source>
+        <target>The best pack to find the best players for building your number one squad.&#10;&#10;Includes 12 items. Mostly Gold &amp; 1 Rare.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_10_NAME" resname="FUT_STORE_PACK_10_NAME">
+        <source>PREMIUM GOLD PACK</source>
+        <target>PREMIUM GOLD PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_10_DESC" resname="FUT_STORE_PACK_10_DESC">
+        <source>The best pack for finding those elite players to fill out your best squad.&#10;&#10;Includes 12 items. Mostly Gold &amp; 3 Rares.</source>
+        <target>The best pack for finding those elite players to fill out your best squad.&#10;&#10;Includes 12 items. Mostly Gold &amp; 3 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_11_NAME" resname="FUT_STORE_PACK_11_NAME">
+        <source>PREMIUM GOLD JUMBO</source>
+        <target>PREMIUM GOLD JUMBO</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_11_DESC" resname="FUT_STORE_PACK_11_DESC">
+        <source>More high quality items and double the size of a Premium Gold Pack.&#10;&#10;Include 24 Items. Mostly Gold &amp; 7 Rares.</source>
+        <target>More high quality items and double the size of a Premium Gold Pack.&#10;&#10;Include 24 Items. Mostly Gold &amp; 7 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_12_NAME" resname="FUT_STORE_PACK_12_NAME">
+        <source>GOLD PLAYERS PREMIUM</source>
+        <target>GOLD PLAYERS PREMIUM</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_12_DESC" resname="FUT_STORE_PACK_12_DESC">
+        <source>Players only, better chances of getting rare or higher quality players.&#10;&#10;Includes 12 Players. Mostly Gold &amp; 3 Rares.</source>
+        <target>Players only, better chances of getting rare or higher quality players.&#10;&#10;Includes 12 Players. Mostly Gold &amp; 3 Rares.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_13_NAME" resname="FUT_STORE_PACK_13_NAME">
+        <source>RARE GOLD PACK</source>
+        <target>RARE GOLD PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_13_DESC" resname="FUT_STORE_PACK_13_DESC">
+        <source>The best pack just got better!&#10;&#10;Includes 12 items, mostly gold, all rare.</source>
+        <target>The best pack just got better!&#10;&#10;Includes 12 items, mostly gold, all rare. </target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_14_NAME" resname="FUT_STORE_PACK_14_NAME">
+        <source>MEGA PACK</source>
+        <target>MEGA PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_14_DESC" resname="FUT_STORE_PACK_14_DESC">
+        <source>The biggest pack yet!&#10;&#10;30, yes, THIRTY items, mostly gold, 18 rare items.</source>
+        <target>The biggest pack yet!&#10;&#10;30, yes, THIRTY items, mostly gold, 18 rare items.</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_15_NAME" resname="FUT_STORE_PACK_15_NAME">
+        <source>JUMBO RARE PLAYER PACK</source>
+        <target>JUMBO RARE PLAYER PACK</target>
+      </trans-unit>
+      <trans-unit id="FUT_STORE_PACK_15_DESC" resname="FUT_STORE_PACK_15_DESC">
+        <source>The best of the best!&#10;&#10;24 players, all gold, all rare. It doesn't get any better than that.</source>
+        <target>The best of the best!&#10;&#10;24 players, all gold, all rare. It doesn't get any better than that.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
