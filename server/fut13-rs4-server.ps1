@@ -1,4 +1,4 @@
-﻿# FUT (RS4) HTTP endpoint for FIFA 13 — the service CardsDLLzf.dll talks to.
+# FUT (RS4) HTTP endpoint for FIFA 13 — the service CardsDLLzf.dll talks to.
 #
 # The DLL's built-in base is http://easw.easports.com:8099/ and its route table
 # (recovered from the DLL's own strings) is keyed by symbolic name:
@@ -92,16 +92,21 @@ $script:ClientDataBuckets = @{}
 $script:PackCatalog = @(
     # Exact storefront rows from the working donor backend. The previous local
     # build removed promo group 4 without evidence; donor renders/buys all ten.
-    [ordered]@{ id=1;  name='Bronze Pack';               level='bronze'; coins=400; points=$null; rares=1;  premium=$false; size=12; group='bronze'; assetId=1 },
-    [ordered]@{ id=2;  name='Premium Bronze Pack';       level='bronze'; coins=750; points=$null; rares=3;  premium=$true;  size=12; group='bronze'; assetId=1 },
-    [ordered]@{ id=3;  name='Silver Pack';               level='silver'; coins=2500; points=50;    rares=1;  premium=$false; size=12; group='silver'; assetId=2 },
-    [ordered]@{ id=4;  name='Premium Silver Pack';       level='silver'; coins=3750; points=75;    rares=3;  premium=$true;  size=12; group='silver'; assetId=2 },
-    [ordered]@{ id=5;  name='Gold Pack';                 level='gold';   coins=5000; points=100;   rares=1;  premium=$false; size=12; group='gold';   assetId=3 },
-    [ordered]@{ id=6;  name='Premium Gold Pack';         level='gold';   coins=7500; points=150;   rares=3;  premium=$true;  size=12; group='gold';   assetId=3 },
-    [ordered]@{ id=7;  name='Premium Gold Players Pack'; level='gold';   coins=25000; points=300;   rares=3;  premium=$true;  size=12; group='promo';  assetId=4 },
-    [ordered]@{ id=8;  name='Prime Gold Players Pack';   level='gold';   coins=45000; points=600;   rares=6;  premium=$true;  size=12; group='promo';  assetId=4 },
-    [ordered]@{ id=9;  name='Rare Players Pack';         level='gold';   coins=50000; points=1000;  rares=12; premium=$true;  size=12; group='promo';  assetId=4 },
-    [ordered]@{ id=10; name='Jumbo Rare Players Pack';   level='gold';   coins=100000; points=2000;  rares=24; premium=$true;  size=24; group='promo';  assetId=4 }
+    [ordered]@{ id=1;  name='Bronze Pack';               level='bronze'; coins=400; points=$null; rares=1;  premium=$false; size=12;  group='BRONZE PACKS'; assetId=1 },
+    [ordered]@{ id=2;  name='Premium Bronze Pack';       level='bronze'; coins=750; points=$null; rares=3;  premium=$true; size=12;  group='BRONZE PACKS'; assetId=1 },
+    [ordered]@{ id=3;  name='Premium Bronze Jumbo';       level='bronze'; coins=1500; points=75; rares=7;  premium=$true; size=24;  group='BRONZE PACKS'; assetId=1 },
+    [ordered]@{ id=4;  name='Bronze Players Premium';       level='bronze'; coins=1800; points=$null;    rares=3;  premium=$true;  size=12; group='BRONZE PACKS'; assetId=1 },
+    [ordered]@{ id=5;  name='Silver Pack';               level='silver'; coins=2500; points=50;    rares=1;  premium=$false; size=12; group='SILVER PACKS'; assetId=2 },
+    [ordered]@{ id=6;  name='Premium Silver Pack';       level='silver'; coins=3750; points=75;    rares=3;  premium=$true;  size=12; group='SILVER PACKS'; assetId=2 },
+    [ordered]@{ id=7;  name='Premium Silver Jumbo';       level='silver'; coins=7500; points=150;    rares=7;  premium=$true;  size=24; group='SILVER PACKS'; assetId=2 },
+    [ordered]@{ id=8;  name='Silver Players Premium';       level='silver'; coins=8500; points=200;    rares=3;  premium=$true;  size=12; group='SILVER PACKS'; assetId=2 },
+    [ordered]@{ id=9;  name='Gold Pack';                 level='gold';   coins=5000; points=100;   rares=1;  premium=$false; size=12; group='GOLD PACKS';   assetId=3 },
+    [ordered]@{ id=10;  name='Premium Gold Pack';         level='gold';   coins=7500; points=150;   rares=3;  premium=$true;  size=12; group='GOLD PACKS';   assetId=3 },
+    [ordered]@{ id=11;  name='Premium Gold Jumbo';         level='gold';   coins=15000; points=300;   rares=7;  premium=$true;  size=24; group='GOLD PACKS';   assetId=3 },
+    [ordered]@{ id=12;  name='Gold Players Premium'; level='gold';   coins=25000; points=350;   rares=3;  premium=$true;  size=12; group='GOLD PACKS';  assetId=3 },
+    [ordered]@{ id=13;  name='Rare Gold Pack';         level='gold';   coins=25000; points=500;  rares=12; premium=$true;  size=12; group='SPECIAL PACKS';  assetId=4 },
+    [ordered]@{ id=14;  name='Mega Pack';   level='gold';   coins=35000; points=500;   rares=18;  premium=$true;  size=30; group='SPECIAL PACKS';  assetId=4 },
+    [ordered]@{ id=15; name='Jumbo Rare Player Pack';  	 level='gold'; coins=100000; points=2000;    rares=24;  premium=$true;  size=24; group='SPECIAL PACKS'; assetId=4 }
 )
 
 # Session-local mutable squad state. The trace on 14 August proved the FIFA 13
@@ -424,7 +429,7 @@ function New-PlayerItem(
         timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
         owners = 1
         lastSalePrice = 0
-        discardValue = [Math]::Max(0,[Math]::Min(65535,([int]$Rating * 5)))
+        discardValue = (Get-PlayerQuickSellValue -Rating $Rating -Rare:([bool]$rare) -IsSpecial:$IsSpecial)
 
         # Donor NEW_ITEM_STATE defaults. Do not send "free" itemState for
         # normal players; that field is reserved for actual equipped states.
@@ -707,28 +712,64 @@ function Build-SquadDetailDocument {
     return ($root | ConvertTo-Json -Depth 10 -Compress)
 }
 
+function Get-DetectedRuntimeBuild {
+    # autoattach.py records the actual Blaze runtime build before FUT is allowed
+    # to load. Read it at request time because RS4 itself starts before FIFA.
+    try {
+        $root = Split-Path -Parent $PSScriptRoot
+        $settingsPath = Join-Path $root 'local.settings.json'
+        if (Test-Path -LiteralPath $settingsPath) {
+            $settings = Get-Content -LiteralPath $settingsPath -Raw | ConvertFrom-Json
+            $runtime = [string]$settings.gameRuntimeVersion
+            if ($runtime) { return $runtime.Trim() }
+        }
+    } catch {
+        Write-Log ("STORE runtime detection warning: {0}" -f $_.Exception.Message)
+    }
+    return ''
+}
+
 function Get-StoreDocument {
+    $runtime = Get-DetectedRuntimeBuild
+    $isCl1217703 = ($runtime -eq '1217703')
+
+    # CL1217703 is the January retail CardsDLL that the donor RS4 schemas were
+    # recovered from. On real 1217703 PCs the 10-pack catalogue completes every
+    # HTTP request but the frontend never leaves its spinner after doing a second
+    # wallet refresh. Two things in our extended catalogue are not part of the
+    # original six-pack flow: the PROMO display group (asset 4), and FIFA-Points
+    # prices which involve the first-party commerce singleton we do not run.
+    # Keep the newer CL1298564 path unchanged, but give 1217703 the conservative
+    # six original packs and coins-only prices. This also means it only asks for
+    # backgrounds 1/2/3, all of which are already proven content paths.
+    $packs = @($script:PackCatalog)
+    if ($isCl1217703) {
+        $packs = @($script:PackCatalog | Where-Object {
+            [int]$_.id -le 6 -or [int]$_.id -eq 20
+        })
+    }
+
     $purchase=@()
-    foreach ($pack in $script:PackCatalog) {
+    foreach ($pack in $packs) {
         $currencies=@([ordered]@{ name='coins'; funds=[int]$pack.coins; finalFunds=[int]$pack.coins })
-        if ($null -ne $pack.points) {
+        if (-not $isCl1217703 -and $null -ne $pack.points) {
             $currencies += [ordered]@{ name='points'; funds=[int]$pack.points; finalFunds=[int]$pack.points }
         }
         $purchase += [ordered]@{
             id=[int]$pack.id
-            packType=([string]$pack.level).ToUpperInvariant()
+            packType=([string]$pack.level)
             assetId=[int]$pack.assetId
             displayGroupAssetId=[int]$pack.assetId
             description=[string]$pack.name
             currencies=$currencies
             displayGroup=[ordered]@{
                 priority=[int]$pack.assetId
-                value=([string]$pack.group).ToUpperInvariant()
+                value=([string]$pack.group)
             }
             sortPriority=[int]$pack.id
             state='active'
             visible=1
-            saleType='NONE'
+            saleType='none'
             purchaseCount=0
             purchaseLimit=-1
             isPremium=[bool]$pack.premium
@@ -736,8 +777,11 @@ function Get-StoreDocument {
         }
     }
 
-    # v0.14.1: exact donor storefront includes promo category asset 4.
-    Write-Log ("STORE DONOR v0.14.1: serving {0} packs; category assets=1,2,3,4" -f $purchase.Count)
+    if ($isCl1217703) {
+        Write-Log ("STORE CL1217703 COMPAT v0.14.1.11: serving {0} original packs; coins-only; category assets=1,2,3" -f $purchase.Count)
+    } else {
+        Write-Log ("STORE CL1298564 v0.14.1.11: serving {0} packs; category assets=1,2,3,4" -f $purchase.Count)
+    }
     return ([ordered]@{
         purchase=$purchase
         timestamp=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
@@ -973,15 +1017,16 @@ function Get-UserInfo {
 }
 
 function Get-CreditsDocument {
-    # Exact donor FIFA 13 FutGetUserCredits response: currencies[] and nothing
-    # else. Both known names are emitted; Store decides per-pack whether points
-    # are enabled from the pack's own currencies array. The user can still buy
-    # packs with coins; advertising the real zero points wallet avoids inventing
-    # a different response shape from the stock CL1298564 parser contract.
-    return ([ordered]@{ currencies=@(
-        [ordered]@{name='coins';funds=[int]$script:Coins;finalFunds=[int]$script:Coins},
-        [ordered]@{name='points';funds=[int]$script:FifaPoints;finalFunds=[int]$script:FifaPoints}) } |
-        ConvertTo-Json -Depth 5 -Compress)
+    # Exact FutGetUserCredits container. CL1217703 uses a coins-only compatibility
+    # wallet so entering Store cannot start the unimplemented first-party FIFA
+    # Points commerce path. CL1298564 keeps the already-proven two-currency shape.
+    $currencies = @(
+        [ordered]@{name='coins';funds=[int]$script:Coins;finalFunds=[int]$script:Coins}
+    )
+    if ((Get-DetectedRuntimeBuild) -ne '1217703') {
+        $currencies += [ordered]@{name='points';funds=[int]$script:FifaPoints;finalFunds=[int]$script:FifaPoints}
+    }
+    return ([ordered]@{ currencies=$currencies } | ConvertTo-Json -Depth 5 -Compress)
 }
 
 function Get-HubDocument {
@@ -1241,6 +1286,7 @@ function Get-Body([string] $Path, [string] $Method = 'GET', [string] $RequestBod
     if ($clean -match '/game/fifa13/item$' -and $Method -eq 'PUT') {
         return (Move-ItemsDocument $RequestBody)
     }
+
     # Redeem/apply a single owned item (e.g. "Redeem item" on a coins unlock
     # card in New Items). This route was previously unhandled and fell through
     # to the generic 404 below, which makes FIFA 13 tear down the whole FUT
@@ -1386,6 +1432,93 @@ $script:UniqueKinds = @{
 }
 $script:OffTierChance = 0.15
 
+# Real FIFA 13 Ultimate Team quick-sell tables (replacing the earlier
+# rating*5 / tier*5 guesses). Player table is keyed by rating 40-99 with
+# Normal / Rare / In-Form columns. Non-player tables are keyed by level
+# (bronze/silver/gold) with Normal / Rare columns; a handful of native
+# "kind" values (contract/training/health/teamTalk/fitness) additionally
+# vary their gold-rare price, matching the source table.
+$script:PlayerQuickSellRows = @(
+    @(40,12,30,800),   @(41,12,31,820),   @(42,13,32,840),   @(43,13,32,860),
+    @(44,13,33,880),   @(45,14,34,900),   @(46,14,35,920),   @(47,14,35,940),
+    @(48,14,36,960),   @(49,15,37,980),   @(50,15,38,1000),  @(51,15,38,1020),
+    @(52,16,39,1040),  @(53,16,40,1060),  @(54,16,41,1080),  @(55,17,41,1100),
+    @(56,17,42,1120),  @(57,17,43,1140),  @(58,17,44,1160),  @(59,18,44,1180),
+    @(60,18,45,1200),  @(61,18,46,1220),  @(62,19,47,1240),  @(63,19,47,1260),
+    @(64,19,48,1280),  @(65,98,228,4550), @(66,99,231,4620), @(67,101,235,4690),
+    @(68,102,238,4760),@(69,104,242,4830),@(70,105,245,4900),@(71,107,249,4970),
+    @(72,108,252,5040),@(73,110,256,5110),@(74,111,259,5180),@(75,300,600,9150),
+    @(76,304,608,9272),@(77,308,616,9394),@(78,312,624,9516),@(79,316,632,9638),
+    @(80,320,640,9760),@(81,324,648,9882),@(82,328,656,10004),@(83,332,664,10126),
+    @(84,336,672,10248),@(85,340,680,10370),@(86,344,688,10492),@(87,348,696,10614),
+    @(88,352,704,10736),@(89,356,712,10858),@(90,360,720,10980),@(91,364,728,11102),
+    @(92,368,736,11224),@(93,372,744,11346),@(94,376,752,11468),@(95,380,760,11590),
+    @(96,384,768,11712),@(97,388,776,11834),@(98,392,784,11956),@(99,396,792,12078)
+)
+$script:PlayerQuickSellTable = @{}
+foreach ($r in $script:PlayerQuickSellRows) {
+    $script:PlayerQuickSellTable[[string]$r[0]] = [ordered]@{ normal=$r[1]; rare=$r[2]; ifCard=$r[3] }
+}
+
+# "MORE STAFF" table: applies to managers and the other generic staff kinds
+# (headCoach/gkCoach/physio/fitnessCoach) alike.
+$script:StaffQuickSellTiers = @{
+    bronze = @{ normal=6;  rare=32 }
+    silver = @{ normal=36; rare=74 }
+    gold   = @{ normal=85; rare=240 }
+}
+
+# Club items table: stadiums/kits/badges share identical pricing; balls are
+# not tiered at all in the source table and are handled as a flat value.
+$script:ClubItemQuickSellTiers = @{
+    bronze = @{ normal=3;  rare=13 }
+    silver = @{ normal=14; rare=37 }
+    gold   = @{ normal=31; rare=60 }
+}
+$script:BallQuickSellValue = 14
+
+# Development & Training table: bronze/silver share one price across every
+# consumable kind; gold-rare is the one column that differs per kind.
+$script:TrainingQuickSellTiers = @{
+    contract = @{ bronze=@{normal=3;rare=12}; silver=@{normal=13;rare=37}; gold=@{normal=32;rare=63} }
+    training = @{ bronze=@{normal=3;rare=12}; silver=@{normal=13;rare=37}; gold=@{normal=32;rare=67} }
+    health   = @{ bronze=@{normal=3;rare=12}; silver=@{normal=13;rare=37}; gold=@{normal=32;rare=60} } # Healing
+    teamTalk = @{ bronze=@{normal=3;rare=12}; silver=@{normal=13;rare=37}; gold=@{normal=32;rare=60} }
+    fitness  = @{ bronze=@{normal=3;rare=12}; silver=@{normal=13;rare=37}; gold=@{normal=32;rare=56} }
+}
+
+function Get-PlayerQuickSellValue([int]$Rating,[switch]$Rare,[switch]$IsSpecial) {
+    $clamped = [Math]::Max(40,[Math]::Min(99,$Rating))
+    $row = $script:PlayerQuickSellTable[[string]$clamped]
+    if ($null -eq $row) { return [Math]::Max(0,[Math]::Min(65535,$Rating * 5)) }
+    if ($IsSpecial) { return [int]$row.ifCard }
+    if ($Rare) { return [int]$row.rare }
+    return [int]$row.normal
+}
+
+function Get-NativeItemQuickSellValue([string]$Kind,[string]$Level,[switch]$Rare) {
+    $lvl = $Level.ToLowerInvariant()
+    if ($Kind -eq 'ball') { return [int]$script:BallQuickSellValue }
+    if ($Kind -in @('manager','headCoach','gkCoach','physio','fitnessCoach')) {
+        $tier = $script:StaffQuickSellTiers[$lvl]
+        if ($null -eq $tier) { return 0 }
+        return [int]($(if ($Rare) { $tier.rare } else { $tier.normal }))
+    }
+    if ($Kind -in @('kit','badge','stadium')) {
+        $tier = $script:ClubItemQuickSellTiers[$lvl]
+        if ($null -eq $tier) { return 0 }
+        return [int]($(if ($Rare) { $tier.rare } else { $tier.normal }))
+    }
+    if ($script:TrainingQuickSellTiers.ContainsKey($Kind)) {
+        $tierSet = $script:TrainingQuickSellTiers[$Kind]
+        $tier = $tierSet[$lvl]
+        if ($null -eq $tier) { return 0 }
+        return [int]($(if ($Rare) { $tier.rare } else { $tier.normal }))
+    }
+    # coins/pack and any unrecognised kind have no quick-sell table entry.
+    return 0
+}
+
 function Get-WeightedPlayerCount {
     $total=0; foreach($w in $script:PlayerCountWeights.Values){$total += [int]$w}
     $pick=$script:Rng.Next(0,$total); $run=0
@@ -1400,7 +1533,6 @@ function Get-ItemTierValue([object]$row) {
 }
 
 function New-NativeCatalogItem([long]$ItemId,[object]$row) {
-    $tier = Get-ItemTierValue $row
     $rare = if ([bool]$row.rare) { 1 } else { 0 }
     $out=[ordered]@{
         id=[long]$ItemId
@@ -1410,7 +1542,7 @@ function New-NativeCatalogItem([long]$ItemId,[object]$row) {
         timestamp=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
         owners=1
         lastSalePrice=0
-        discardValue=[Math]::Max(0,[Math]::Min(65535,$tier*5))
+        discardValue=(Get-NativeItemQuickSellValue -Kind ([string]$row.kind) -Level ([string]$row.level) -Rare:([bool]$rare))
     }
     if ($null -ne $row.cardsubtypeid -and [int]$row.cardsubtypeid -gt 0) { $out['cardsubtypeid']=[int]$row.cardsubtypeid }
     if ($null -ne $row.teamId -and [int]$row.teamId -gt 0) { $out['teamid']=[int]$row.teamId }
@@ -1683,7 +1815,7 @@ function New-PackPurchaseDocument([string]$RequestBody='', [string]$Path='') {
         # use the donor's measured distribution: usually 3-4 players and the
         # remaining slots are native contracts, health/training, staff and club
         # cosmetics from cards_ng_db.
-        $playerOnly = ([int]$pack.id -ge 7)
+        $playerOnly = ([int]$pack.id -in @(4, 8, 12, 15))
         $playerCount = if ($playerOnly) { $size } else { [Math]::Min($size, (Get-WeightedPlayerCount)) }
         $slotKinds = @()
         for ($i=0; $i -lt $playerCount; $i++) { $slotKinds += 'player' }
