@@ -745,7 +745,7 @@ function Get-StoreDocument {
     $packs = @($script:PackCatalog)
     if ($isCl1217703) {
         $packs = @($script:PackCatalog | Where-Object {
-            [int]$_.id -le 6 -or [int]$_.id -eq 20
+            [int]$_.id -le 6
         })
     }
 
